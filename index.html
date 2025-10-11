@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuar - Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #110e25, #100c2b, #100a36);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-size: 500px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px 40px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .nav-tabs { display: flex; gap: 15px; }
+
+        .nav-tab, .category-tab {
+            padding: 8px 25px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-tab:hover, .category-tab:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border-color: rgba(128, 99, 231, 0.5);
+        }
+
+        .nav-tab.active, .category-tab.active {
+            background: rgba(91, 72, 212, 0.15);
+            border: 2px solid #8063e7;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(91, 72, 212, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .logo img {
+            height: 40px;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 0 transparent);
+        }
+
+        .logo:hover { transform: scale(1.05); }
+
+        .logo:hover img {
+            filter: drop-shadow(0 0 8px rgba(91, 72, 212, 0.7));
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            background: transparent;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 2;
+        }
+
+        .search-icon:hover { transform: scale(1.15); }
+
+        .search-container.active .search-icon {
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+        }
+
+        .search-bar {
+            position: absolute;
+            right: 0;
+            width: 0;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: #fff;
+            font-size: 15px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-bar::placeholder { color: rgba(255, 255, 255, 0.6); }
+
+        .search-bar.active {
+            width: 300px;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #5b48d4;
+            background: rgba(91, 72, 212, 0.2);
+            box-shadow: 0 0 20px rgba(91, 72, 212, 0.3);
+        }
+
+        .hero-banner {
+            width: 100%;
+            height: 500px;
+            position: relative;
+            background: url('https://4kwallpapers.com/images/wallpapers/ballerina-movie-3840x2160-22626.jpg') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(to top, #110e25 0%, rgba(26, 20, 65, 0.8) 20%, transparent 50%),
+                linear-gradient(to right, rgba(14, 10, 41, 0.9) 0%, transparent 15%, transparent 85%, rgba(26, 20, 65, 0.9) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 72px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-watch, .btn-watch-later {
+            padding: 15px 40px;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-watch {
+            background: linear-gradient(45deg, #5c45af, #5c45af);
+        }
+
+        .btn-watch:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(124, 53, 236, 0.5);
+        }
+
+        .btn-watch-later {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-watch-later:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .movie-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(135deg, #8063e7, hsl(251, 61%, 53%));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .movie-card:hover .movie-poster img {
+            transform: scale(1.1);
+        }
+
+        .play-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 2;
+        }
+
+        .movie-card:hover .play-icon { opacity: 1; }
+
+        .play-icon::after {
+            content: '▶';
+            color: #fff;
+            font-size: 24px;
+            margin-left: 4px;
+        }
+
+        .movie-info { padding: 15px; }
+
+        .movie-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .movie-meta {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .rating {
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            max-height: 90vh;
+            animation: zoomIn 0.4s;
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            color: #fff;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 700px;
+            background: #000;
+        }
+
+        .video-player iframe, .video-player video {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .video-placeholder::before {
+            content: '🌙';
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .movie-details { padding: 30px; }
+
+        .movie-details h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .movie-details p {
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .movie-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .movie-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 4px;
+        }
+
+        .star {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.3);
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .star::before {
+            content: '★';
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #fff;
+            width: 100%;
+            height: 0%;
+            overflow: hidden;
+            animation: fillStar 1.5s ease-out forwards;
+        }
+
+        .star.filled::before, .star.partial::before {
+            height: var(--fill-percent, 100%);
+        }
+
+        @keyframes fillStar {
+            from { height: 0%; transform: translateY(100%); }
+            to { height: var(--final-height, 100%); transform: translateY(0%); }
+        }
+
+        .star:nth-child(1)::before { animation-delay: 0s; }
+        .star:nth-child(2)::before { animation-delay: 0.1s; }
+        .star:nth-child(3)::before { animation-delay: 0.2s; }
+        .star:nth-child(4)::before { animation-delay: 0.3s; }
+        .star:nth-child(5)::before { animation-delay: 0.4s; }
+
+        .genres {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .genre-tag {
+            background: rgba(255, 107, 107, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <div class="header-left">
+                <div class="logo">
+                    <img src="https://i.ibb.co/DDyKRKY6/nuarrr.png" alt="Nuar">
+                </div>
+                <div class="nav-tabs">
+                    <div class="nav-tab active" onclick="changeCategory('filmes')">Filmes</div>
+                    <div class="nav-tab" onclick="changeCategory('series')">Séries</div>
+                    <div class="nav-tab" onclick="changeCategory('animes')">Animes</div>
+                </div>
+            </div>
+            
+            <div class="search-container">
+                <button class="search-icon" onclick="toggleSearch()">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <input type="text" class="search-bar" placeholder="Buscar..." id="searchInput">
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title">Bailarina</h1>
+            <p class="hero-subtitle">Do Universo de John Wick</p>
+            <div class="hero-buttons">
+                <button class="btn-watch" onclick="openModal(3)">▶ Assistir Filme</button>
+                <button class="btn-watch-later" onclick="alert('Adicionado à lista!')">+ Adicionar a ver depois</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="category-tabs">
+            <div class="category-tab active">Lançamentos</div>
+            <div class="category-tab">Novos Filmes</div>
+            <div class="category-tab">Populares</div>
+            <div class="category-tab">Mais Assistidos</div>
+        </div>
+
+        <h2 class="section-title" id="sectionTitle">Filmes em Destaque</h2>
+        <div class="movies-grid" id="moviesGrid"></div>
+    </div>
+
+    <div class="modal" id="modal" onclick="if(event.target.id==='modal') closeModal()">
+        <div class="modal-content" id="modalContent">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div class="video-player" id="videoPlayer">
+                <div class="video-placeholder"><span>Carregando vídeo...</span></div>
+            </div>
+            <div class="movie-details" id="movieDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentCategory = 'filmes';
+
+        const content = {
+            filmes: [
+                {id: 1, title: "Meu Malvado Favorito 4", year: 2024, rating: 6.5, duration: "1h 34m", genres: ["Animação", "Aventura"], description: "Gru dá as boas-vindas a um novo membro da família, Gru Jr., que pretende atormentar seu pai.", imageUrl: "https://br.web.img3.acsta.net/img/6c/71/6c71afa89fd8ed8999b3e04d8d794a0e.jpg", videoUrl: "https://embed.warezcdn.cc/filme/tt7510222"},
+                {id: 2, title: "Duna 2", year: 2024, rating: 8.0, duration: "2h 46m", genres: ["Ficção científica", "Aventura"], description: "Paul Atreides se une a Chani e aos Fremen enquanto busca vingança.", imageUrl: "https://ingresso-a.akamaihd.net/prd/img/movie/duna-parte-2/3971d5d6-702d-40d8-b990-872d4ffe3e32.webp", videoUrl: "https://embed.warezcdn.cc/filme/tt15239678"},
+                {id: 3, title: "Bailarina", year: 2025, rating: 7.2, duration: "2h 5m", genres: ["Ação", "Aventura"], description: "Treinada nas tradições assassinas, Eve Macarro enfrenta um exército de assassinos.", imageUrl: "https://m.media-amazon.com/images/M/MV5BMDQzMDRhMDItYWEzMi00Mzk2LTg3M2EtNzMzNGRlYTNlMmZkXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", videoUrl: "https://embed.warezcdn.cc/filme/tt7181546"},
+                {id: 4, title: "Traga ela de volta", year: 2025, rating: 8.5, duration: "1h 36min", genres: ["Terror", "Suspense"], description: "Faça Ela Voltar acompanha a vida de dois meio-irmãos que, após encontrarem seu pai morto no banheiro, são alocados para um lar adotivo. Andy e Piper acabam na casa de Laura, sua nova guardiã. Com um jeito excêntrico, Laura trabalhava como conselheira pedagógica e, além dos irmãos, também adota um jovem mudo chamado Oliver. Afastada da cidade grande, o imóvel no qual a garota e o garoto vivem esconde grandes segredos, e a descoberta de um ritual aterrorizante é capaz de destruir para sempre a relação dos dois, e até mesmo transformá-la em uma dor profunda.", imageUrl: "https://preview.redd.it/bring-her-back-v0-95sztzhlskaf1.jpeg?auto=webp&s=5d6317c75c4203172cc7f44ad87104d1ddad37d3", videoUrl: "https://embed.warezcdn.cc/filme/tt32246771"}
+            ],
+            series: [
+                {id: 101, title: "Breaking Bad", year: 2008, rating: 9.5, duration: "5 temporadas", genres: ["Drama", "Crime"], description: "Um professor diagnosticado com câncer se junta a um ex-aluno para produzir metanfetamina.", imageUrl: "https://img.elo7.com.br/product/685x685/26A857B/big-poster-serie-breaking-bad-lo02-tamanho-90x60-cm-poster.jpg", videoUrl: "https://embed.warezcdn.cc/serie/tt0903747"},
+                {id: 102, title: "Stranger Things", year: 2016, rating: 8.7, duration: "4 temporadas", genres: ["Ficção científica", "Terror"], description: "Quando um garoto desaparece, sua mãe e amigos enfrentam forças aterrorizantes.", imageUrl: "https://i.pinimg.com/1200x/00/ea/7c/00ea7c88e9e80f8bea6d13f3f7f0a810.jpg", videoUrl: "https://embed.warezcdn.cc/serie/tt4574334"},
+                {id: 103, title: "Dexter", year: 2006, rating: 8.8, duration: "8 temporada", genres: ["Crime", "Suspense", "Ação"], description: "Dexter é um especialista forense que passa o dia solucionando crimes e a noite cometendo assassinatos. Inteligente e bonito, o assassino em série vive em conflito com seu instinto de matador e o desejo pela felicidade.", imageUrl: "https://br.web.img2.acsta.net/pictures/210/032/21003280_20130504002100017.jpg", videoUrl: "https://embed.warezcdn.cc/serie/tt0773262"},
+            ],
+            animes: [
+                {id: 201, title: "Kaiju No. 8", year: 2024, rating: 9.0, duration: "1 temporada", genres: ["Ação", "Fantasia"], description: "Kaiju No. 8 é uma série de mangá japonesa escrita e ilustrada por Naoya Matsumoto.", imageUrl: "https://upload.wikimedia.org/wikipedia/pt/9/92/Kaiju_N%C2%BA_8.jpg ", videoUrl: "https://embed.warezcdn.cc/serie/tt21975436"},
+                {id: 202, title: "Gachiakuta", year: 2025, rating: 8.6, duration: "1 temporada", genres: ["Ação", "Aventura"], description: "Gachiakuta se passa em uma sociedade dividida entre uma cidade flutuante e um lixão no nível inferior.", imageUrl: "https://m.media-amazon.com/images/M/MV5BZDU5ZmEzODYtMDU2OS00NTZiLTk4MWYtYWUyZWUzNGU2ODdjXkEyXkFqcGc@._V1_.jpg", videoUrl: "https://embed.warezcdn.cc/serie/tt32612521"}
+            ],
+        };
+
+        const titles = {
+            filmes: 'Filmes em Destaque',
+            series: 'Séries Populares',
+            animes: 'Animes em Alta',
+        };
+
+        function toggleSearch() {
+            const searchBar = document.getElementById('searchInput');
+            const searchContainer = document.querySelector('.search-container');
+            searchBar.classList.toggle('active');
+            searchContainer.classList.toggle('active');
+            if (searchBar.classList.contains('active')) setTimeout(() => searchBar.focus(), 400);
+        }
+
+        document.addEventListener('click', e => {
+            const searchContainer = document.querySelector('.search-container');
+            const searchBar = document.getElementById('searchInput');
+            if (!searchContainer.contains(e.target) && searchBar.classList.contains('active')) {
+                searchBar.classList.remove('active');
+                searchContainer.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.querySelector('.search-bar').classList.remove('active');
+                document.querySelector('.search-container').classList.remove('active');
+            }
+        });
+
+        function changeCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('sectionTitle').textContent = titles[category];
+            renderMovies(content[category]);
+            document.getElementById('searchInput').value = '';
+        }
+
+        function renderMovies(moviesToRender = content.filmes) {
+            const grid = document.getElementById('moviesGrid');
+            grid.style.animation = 'none';
+            setTimeout(() => {
+                grid.innerHTML = moviesToRender.map(m => `
+                    <div class="movie-card" onclick="openModal(${m.id})">
+                        <div class="movie-poster">
+                            <img src="${m.imageUrl}" alt="${m.title}">
+                            <div class="play-icon"></div>
+                        </div>
+                        <div class="movie-info">
+                            <div class="movie-title">${m.title}</div>
+                            <div class="movie-meta">
+                                <span class="rating">⭐ ${m.rating}</span>
+                                <span>${m.year}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                grid.style.animation = 'fadeIn 0.5s';
+            }, 10);
+        }
+
+        function generateStars(rating) {
+            const percentage = (rating / 10) * 5;
+            const full = Math.floor(percentage);
+            const partial = (percentage - full) * 100;
+            const empty = 5 - Math.ceil(percentage);
+            
+            let stars = Array(full).fill().map(() => '<span class="star filled" style="--final-height: 100%">★</span>').join('');
+            if (partial > 0) stars += `<span class="star partial" style="--fill-percent: ${partial}%; --final-height: ${partial}%">★</span>`;
+            stars += Array(empty).fill().map(() => '<span class="star" style="--final-height: 0%">★</span>').join('');
+            return stars;
+        }
+
+        function openModal(movieId) {
+            const allContent = [...content.filmes, ...content.series, ...content.animes,];
+            const movie = allContent.find(m => m.id === movieId);
+            const modal = document.getElementById('modal');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const details = document.getElementById('movieDetails');
+            
+            videoPlayer.innerHTML = movie.videoUrl 
+                ? `<iframe src="${movie.videoUrl}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`
+                : `<div class="video-placeholder"><span>Adicione a URL do embed do WarezCDN aqui</span></div>`;
+            
+            details.innerHTML = `
+                <h2>${movie.title}</h2>
+                <div class="movie-header">
+                    <div class="movie-rating">
+                        <div class="stars">${generateStars(movie.rating)}</div>
+                        <span>${movie.rating}/10</span>
+                    </div>
+                    <span>•</span>
+                    <span>${movie.duration}</span>
+                </div>
+                <p>${movie.description}</p>
+                <div class="genres">
+                    ${movie.genres.map(g => `<span class="genre-tag">${g}</span>`).join('')}
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', e => {
+            const term = e.target.value.toLowerCase();
+            const filtered = content[currentCategory].filter(m => 
+                m.title.toLowerCase().includes(term) || m.genres.some(g => g.toLowerCase().includes(term))
+            );
+            renderMovies(filtered);
+        });
+
+        renderMovies();
+    </script>
+</body>
+</html>
