@@ -94,6 +94,29 @@
             position: relative;
             display: flex;
             align-items: center;
+            gap: 15px;
+        }
+
+        .btn-adblocker {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #151130, #4536a8);
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(81, 52, 150, 0.3);
+        }
+
+        .btn-adblocker:hover {
+            transform: translateZ(30px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(92, 53, 163, 0.6);
+            background: linear-gradient(135deg, #151130, #391469);
         }
 
         .search-icon {
@@ -511,6 +534,9 @@
             </div>
             
             <div class="search-container">
+                <button class="btn-adblocker" onclick="window.open('https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm', '_blank')">
+                    Adblock
+                </button>
                 <button class="search-icon" onclick="toggleSearch()">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
                         <circle cx="11" cy="11" r="8"></circle>
